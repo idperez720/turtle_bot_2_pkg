@@ -40,15 +40,7 @@ class turtle_bot_teleop:
 
 
 
-        #self.moveit()
-        if key.is_pressed('w'):
-            self.move.linear = 5
-            self.cmd_vel_pub.publish(self.move)
-        ## Move revers
-        if key.is_pressed('s'):
-            self.move.linear = -5
-            self.cmd_vel_pub.publish(self.move)
-        ## Move left
+        self.moveit()
 
     def moveit(self):
         ## Move straigth
