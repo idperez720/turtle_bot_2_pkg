@@ -4,7 +4,8 @@ from geometry_msgs.msg import Twist
 from pynput import keyboard as kb
 
 move_msg = Twist()
-vel = 0
+velLin = 0 
+velAng = 0
 
 move_msg.linear.x = 0
 move_msg.linear.y = 0
@@ -12,24 +13,23 @@ move_msg.linear.z = 0
 move_msg.angular.x = 0
 move_msg.angular.y = 0
 move_msg.angular.z = 0
-print(move_msg)
 
 def on_press(key):
     #print(move)
     try:
         if key.char == 'w':
             print('w on press') 
-            move_msg.linear.x = vel         
+            move_msg.linear.x = velLin         
             
         elif key.char == 's':
             print('s on press')
-            move_msg.linear.x = -vel
+            move_msg.linear.x = -velLin
         elif key.char == 'a':
             print('a on press')
-            move_msg.angular.z = vel
+            move_msg.angular.z = velAng
         elif key.char == 'd':
             print('d on press')
-            move_msg.angular.z = -vel
+            move_msg.angular.z = -velAng
 
     except:
         pass
@@ -60,6 +60,7 @@ def move():
                     
 if __name__ == '__main__':
     rospy.init_node('turtle_bot_teleop', anonymous=True)
-    vel = float(input('Ingrese la velociadad deseada: '))
+    velLin = float(input('Ingrese la velociadad lineal deseada: '))
+    velAng = float(input('Ingrese la velociadad lineal deseada: '))
     listener.start()
     move()
