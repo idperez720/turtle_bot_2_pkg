@@ -18,17 +18,13 @@ def on_press(key):
     #print(move)
     try:
         if key.char == 'w':
-            print('w on press') 
             move_msg.linear.x = velLin         
             
         elif key.char == 's':
-            print('s on press')
             move_msg.linear.x = -velLin
         elif key.char == 'a':
-            print('a on press')
             move_msg.angular.z = velAng
         elif key.char == 'd':
-            print('d on press')
             move_msg.angular.z = -velAng
 
     except:
@@ -38,10 +34,8 @@ def on_release(key):
     try:
         if key.char == 'w' or key.char == 's':
             move_msg.linear.x = 0
-            print('a on release')
         elif key.char == 'a' or key.char == 'd':
             move_msg.angular.z = 0
-            print('s on release')
 
     except:
         pass
