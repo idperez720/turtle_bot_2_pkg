@@ -1,65 +1,65 @@
 #!/usr/bin/env python3
-
 import rospy
 from geometry_msgs.msg import Twist
-import keyboard as key
+from pynput import keyboard as kb
 
+move_msg = Twist()
+vel = 0
 
-class turtle_bot_teleop:
+move_msg.linear.x = 0
+move_msg.linear.y = 0
+move_msg.linear.z = 0
+move_msg.angular.x = 0
+move_msg.angular.y = 0
+move_msg.angular.z = 0
+print(move_msg)
 
-    def __init__(self):
+def on_press(key):
+    #print(move)
+    try:
+        if key.char == 'w':
+            print('w on press') 
+            move_msg.linear.x = vel         
+            
+        elif key.char == 's':
+            print('s on press')
+            move_msg.linear.x = -vel
+        elif key.char == 'a':
+            print('a on press')
+            move_msg.angular.z = vel
+        elif key.char == 'd':
+            print('d on press')
+            move_msg.angular.z = -vel
 
-        ## rosrate define
-        self.rate = rospy.Rate(10)
+    except:
+        pass
 
-        ## Variable initialization
-        self.turtle_pos_x = 0.0
-        self.turtle_pos_y = 0.0
-        self.turtle_pos_z = 0.0
-        self.turtle_linear_vel = 0.0
-        self.turtle_move = False
-        self.angular_vel = 0.0
-        self.move = Twist()
+def on_release(key):
+    try:
+        if key.char == 'w' or key.char == 's':
+            move_msg.linear.x = 0
+            print('a on release')
+        elif key.char == 'a' or key.char == 'd':
+            move_msg.angular.z = 0
+            print('s on release')
 
-        #Ask for velocity
-        # self.turtle_lineal_vel = input('Linear Velocity')
+    except:
+        pass
+listener = kb.Listener(
+            on_press=on_press,
+            on_release=on_release)
 
-        self.cmd_vel_pub = rospy.Publisher('/turtlebot_cmdVel', Twist, queue_size=10)
-        self.orientation = rospy.Publisher('/turtlebot_orientation', Twist, queue_size=10)
-        self.position = rospy.Subscriber('/turtlebot_position', Twist, self.callback_pos)
+def move():
+    cmd_vel_pub = rospy.Publisher('/turtlebot_cmdVel', Twist, queue_size=10)
+    rospy.Rate(10)
 
+    while not rospy.is_shutdown():
+        cmd_vel_pub.publish(move_msg)
 
-    def callback_pos(self, data):
-
-        self.turtle_pos_x = data.linear.x
-        self.turtle_pos_y = data.linear.y
-        self.turtle_pos_z = data.angular.z
-
-        self.turtle_pos = [self.turtle_pos_x, self.turtle_pos_y, self.turtle_pos_z]
-        print(self.turtle_pos)
-
-
-
-        self.moveit()
-
-    def moveit(self):
-        ## Move straigth
-        if key.is_pressed('w'):
-            self.move.linear = 5
-            self.cmd_vel_pub.publish(self.move)
-        ## Move revers
-        if key.is_pressed('s'):
-            self.move.linear = -5
-            self.cmd_vel_pub.publish(self.move)
-        ## Move left
-       # if keyboard.is_pressed('left'):
-
-        ## Move right
-       # if keyboard.is_pressed('right'):
-
+                
+                    
 if __name__ == '__main__':
-    print('hola')
     rospy.init_node('turtle_bot_teleop', anonymous=True)
-    print('hola')
-    turtle_bot_teleop()
-    rospy.spin()
+    vel = float(input('Ingrese la velociadad deseada: '))
+    listener.start()
+    move()
