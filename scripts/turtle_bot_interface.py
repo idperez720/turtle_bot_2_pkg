@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from matplotlib import markers
 import rospy
 import numpy as np
 from geometry_msgs.msg import Twist
@@ -13,7 +14,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 trackX = [] 
 trackY = []
 trackZ = []
-
+title= 'Trayectoria'
 
 def callback_pose(data):
 
@@ -28,6 +29,17 @@ def callback_pose(data):
     pos_array = [turtle_pos_x, turtle_pos_y, turtle_pos_z]
     print(pos_array)
 
+def save_plot():
+    title = title_input.get()
+    fig.suptitle(title)
+    rect = patches.Rectangle((2.3, -2.3), -4.6, 4.6, linewidth=1)
+    ax.add_patch(rect)
+    ax.scatter([-2.3, -2.3, 2.3, 2.3],[2.3, -2.3, -2.3, 2.3])
+    ax.plot(trackX, trackY, color='w')
+    plt.savefig(title + '.png')
+    fig.suptitle('')
+
+
 
 def animate(i, trackX, trackY, trackZ):
     # Draw x and y lists
@@ -35,17 +47,12 @@ def animate(i, trackX, trackY, trackZ):
     t = mpl.markers.MarkerStyle(marker=(3,0))
     t._transform = t.get_transform().rotate_deg(math.degrees(trackZ[-1]))
 
-    
     ax.clear()
     rect = patches.Rectangle((2.3, -2.3), -4.6, 4.6, linewidth=1)
     ax.add_patch(rect)
     ax.scatter([-2.3, -2.3, 2.3, 2.3],[2.3, -2.3, -2.3, 2.3])
+    ax.plot(trackX[-1], trackY[-1])
     ax.plot(trackX, trackY, color='w')
-
-
-
-
-
 
 
 if __name__ == '__main__':
@@ -57,8 +64,6 @@ if __name__ == '__main__':
     fig = plt.figure(figsize=(5,5))
     root = Tk.Tk()
 
-    label = Tk.Label(root,text="SHM Simulation").grid(column=0, row=0)
-
     canvas = FigureCanvasTkAgg(fig, master=root)
     canvas.get_tk_widget().grid(column=0,row=1)
     
@@ -67,11 +72,16 @@ if __name__ == '__main__':
     ax.set_xlim([-2.3, 2.3])
     ax.set_ylim([-2.3, 2.3])
 
+    title_input = Tk.Entry(master=root,
+                            width=30,
+                            font='Arial 20')
+    title_input.place(x=150,y=50)
     save_btn = Tk.Button(master = root,
                         height=2,
                         width=10,
-                        text='save')
-    save_btn.grid(column=0, row=0)
+                        command=save_plot,
+                        text='Save')
+    save_btn.place(x=650, y=50)
     
     # Set up plot to call animate() function periodically
     ani = animation.FuncAnimation(fig, animate, fargs=(trackX, trackY, trackZ), interval=0)
