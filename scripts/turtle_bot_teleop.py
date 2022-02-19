@@ -49,12 +49,12 @@ def on_release(key):
     try:
         if key.char == 'w' or key.char == 's':
             move_msg.linear.x = 0
-            f.write("/n" + move_msg.linear.x + ","+ move_msg.linear.y + ","+ move_msg.linear.z + ","+ move_msg.angular.x + ","+ move_msg.angular.y + ","+ move_msg.angular.z )
-
+            move_str = "\n" + str(move_msg.linear.x) + "," + str(move_msg.linear.y) + "," + str(move_msg.linear.z) + "," + str(move_msg.angular.x) + "," + str(move_msg.angular.y) + "," + str(move_msg.angular.z)
+            f.write(move_str)
         elif key.char == 'a' or key.char == 'd':
             move_msg.angular.z = 0
-            f.write("/n" + move_msg.linear.x + ","+ move_msg.linear.y + ","+ move_msg.linear.z + ","+ move_msg.angular.x + ","+ move_msg.angular.y + ","+ move_msg.angular.z )
-
+            move_str = "\n" + str(move_msg.linear.x) + "," + str(move_msg.linear.y) + "," + str(move_msg.linear.z) + "," + str(move_msg.angular.x) + "," + str(move_msg.angular.y) + "," + str(move_msg.angular.z)
+            f.write(move_str)
 
     except:
         pass
