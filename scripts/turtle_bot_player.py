@@ -62,7 +62,7 @@ def move(text):
     ruts = []
     for n in linesa:
         ruts.append(n.split(","))
-    print(ruts)
+
 
 
 
@@ -77,6 +77,8 @@ def move(text):
             move_msg.angular.y = float(ruts[i][4])
             move_msg.angular.z = float(ruts[i][5])
             cmd_vel_pub.publish(move_msg)
+
+            rate.sleep()
         except:
             pass
 
@@ -89,7 +91,7 @@ def move(text):
 if __name__ == '__main__':
 
     rospy.init_node('turtle_bot_player', anonymous=True)
-    rate = rospy.Rate(10)
+    rate = rospy.Rate(25)
     cmd_vel_pub = rospy.Publisher('/turtlebot_cmdVel', Twist, queue_size=10)
     file_list = os.listdir(directory)
     files = []

@@ -37,6 +37,11 @@ def on_press(key):
             move_msg.angular.z = -velAng
             move_str = "\n" + str(move_msg.linear.x) + "," + str(move_msg.linear.y) + "," + str(move_msg.linear.z) + "," + str(move_msg.angular.x) + "," + str(move_msg.angular.y) + "," + str(move_msg.angular.z)
             f.write(move_str)
+        else:
+            move_msg.linear.x = 0
+            move_msg.angular.z = 0
+            move_str = "\n" + str(move_msg.linear.x) + "," + str(move_msg.linear.y) + "," + str(move_msg.linear.z) + "," + str(move_msg.angular.x) + "," + str(move_msg.angular.y) + "," + str(move_msg.angular.z)
+            f.write(move_str)
         if key.char == 'h':
             f.close()
             print('Recorrido guardado como: ' + name + '.txt')
@@ -70,7 +75,7 @@ listener = kb.Listener(
 def move():
 
     cmd_vel_pub = rospy.Publisher('/turtlebot_cmdVel', Twist, queue_size=10)
-    rospy.Rate(10)
+    rospy.Rate(100)
 
     while not rospy.is_shutdown():
         cmd_vel_pub.publish(move_msg)
