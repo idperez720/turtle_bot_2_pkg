@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-from matplotlib import markers
 import rospy
 import numpy as np
 from geometry_msgs.msg import Twist
+from std_msgs.msg import Float32
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import matplotlib as mpl
@@ -14,7 +14,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 trackX = [] 
 trackY = []
 trackZ = []
-title= 'Trayectoria'
+angle = []
 
 def callback_pose(data):
 
@@ -25,40 +25,37 @@ def callback_pose(data):
     trackX.append(turtle_pos_x)
     trackY.append(turtle_pos_y)
     trackZ.append(turtle_pos_z)
-
     pos_array = [turtle_pos_x, turtle_pos_y, turtle_pos_z]
-    print(pos_array)
+    #print('angulo: ', pos_array)
+
+def callback_orientation(data):
+    angle.append(np.round(float(data.data), 2))
+    #print(angle)
 
 def save_plot():
     title = title_input.get()
     fig.suptitle(title)
-    rect = patches.Rectangle((2.3, -2.3), -4.6, 4.6, linewidth=1)
-    ax.add_patch(rect)
-    ax.scatter([-2.3, -2.3, 2.3, 2.3],[2.3, -2.3, -2.3, 2.3])
-    ax.plot(trackX, trackY, color='w')
     plt.savefig(title + '.png')
     fig.suptitle('')
 
 
-
-def animate(i, trackX, trackY, trackZ):
+def animate(i, trackX, trackY):
     # Draw x and y lists
-
-    t = mpl.markers.MarkerStyle(marker=(3,0))
-    t._transform = t.get_transform().rotate_deg(math.degrees(trackZ[-1]))
-
     ax.clear()
+    print(angle[-1])
     rect = patches.Rectangle((2.3, -2.3), -4.6, 4.6, linewidth=1)
     ax.add_patch(rect)
     ax.scatter([-2.3, -2.3, 2.3, 2.3],[2.3, -2.3, -2.3, 2.3])
-    ax.plot(trackX[-1], trackY[-1])
+    t = mpl.markers.MarkerStyle(marker='^')
+    t._transform = t.get_transform().rotate_deg(math.degrees(angle[-1]))
+    ax.plot(trackX[-1], trackY[-1], color='w', marker=t)
     ax.plot(trackX, trackY, color='w')
-
 
 if __name__ == '__main__':
     # crea el nodo
     rospy.init_node('turtle_bot_interface', anonymous=True)
     rospy.Subscriber('/turtlebot_position', Twist, callback_pose)
+    rospy.Subscriber('/turtlebot_orientation', Float32, callback_orientation)
     rospy.Rate(60)
     
     fig = plt.figure(figsize=(5,5))
@@ -84,7 +81,7 @@ if __name__ == '__main__':
     save_btn.place(x=650, y=50)
     
     # Set up plot to call animate() function periodically
-    ani = animation.FuncAnimation(fig, animate, fargs=(trackX, trackY, trackZ), interval=0)
+    ani = animation.FuncAnimation(fig, animate, fargs=(trackX, trackY), interval=0)
 
     Tk.mainloop()
     
