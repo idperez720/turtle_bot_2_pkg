@@ -42,13 +42,10 @@ def save_plot():
 def animate(i, trackX, trackY):
     # Draw x and y lists
     ax.clear()
-    print(angle[-1])
     rect = patches.Rectangle((2.3, -2.3), -4.6, 4.6, linewidth=1)
     ax.add_patch(rect)
     ax.scatter([-2.3, -2.3, 2.3, 2.3],[2.3, -2.3, -2.3, 2.3])
-    t = mpl.markers.MarkerStyle(marker='^')
-    t._transform = t.get_transform().rotate_deg(math.degrees(angle[-1]))
-    ax.plot(trackX[-1], trackY[-1], color='w', marker=t)
+    ax.plot(trackX[-1], trackY[-1], color='w', marker='*')
     ax.plot(trackX, trackY, color='w')
 
 if __name__ == '__main__':
